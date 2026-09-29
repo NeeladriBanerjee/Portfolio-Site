@@ -1,0 +1,16 @@
+from django.contrib import admin
+from django.urls import path
+from portfolio.views import portfolio_home
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('my-secret-portfolio-dashboard/', admin.site.urls),
+    
+    path('', portfolio_home, name='home'),
+]
+
+# This allows Django to serve your uploaded images locally
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    

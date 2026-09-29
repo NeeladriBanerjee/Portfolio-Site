@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neel.dev</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --text-light: #f8f9fa;
+            --accent: #a855f7; 
+            --accent-2: #3b82f6; 
+            --glass-bg: rgba(18, 18, 18, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }/* LIGHT MODE VARIABLES */
+        body.light-mode {
+            --bg-dark: #f4f4f5; 
+            --text-light: #18181b; 
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+        body.light-mode .bento-content h3, 
+        body.light-mode .credential-column h3, 
+        body.light-mode .cred-card h4,
+        body.light-mode .profiles-title {
+            color: #18181b;
+        }
+        body.light-mode .ambient-orb { opacity: 0.4; }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--text-light);
+            padding: 8px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .theme-toggle:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Profiles & Socials Section */
+        .profiles-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 4rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .profile-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            text-align: center;
+        }
+        .profile-links-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 1.5rem;
+        }
+        .profile-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        body.light-mode .profile-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+        .profile-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
+        }
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); overflow-x: hidden; scroll-behavior: smooth; }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        .orb-1 { top: -10vh; left: -10vw; width: 50vw; height: 50vw; background: rgba(168, 85, 247, 0.12); }
+        .orb-2 { top: 40vh; right: -10vw; width: 60vw; height: 60vw; background: rgba(59, 130, 246, 0.12); animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, 40px) scale(1.1); }
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, var(--accent), var(--accent-2));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 1.5rem 5%;
+            display: flex; justify-content: space-between; z-index: 1000;
+            background: rgba(5,5,5,0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 3px; }
+        
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; text-align: center; padding: 8rem 5% 4rem 5%; position: relative;
+        }
+        
+        .skill-tag {
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .skill-tag:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(168, 85, 247, 0.2);
+        }
+
+        /* --- BENTO GRID LAYOUT --- */
+        .bento-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 5%;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .bento-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            min-height: 420px;
+        }
+
+        /* Makes wide cards span 2 columns on desktop screens */
+        @media (min-width: 768px) {
+            .bento-card.wide {
+                grid-column: span 2;
+            }
+        }
+
+        .bento-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .bento-img-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bento-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .bento-card:hover .bento-img-container img {
+            transform: scale(1.05);
+        }
+
+        .bento-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .bento-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+
+        .bento-content p {
+            color: #a1a1aa;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .bento-tech {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .btn { 
+            display: inline-block; padding: 10px 24px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            color: white; text-decoration: none; border-radius: 50px; 
+            font-weight: 500; font-size: 0.9rem;
+            transition: all 0.3s;
+            width: fit-content;
+        }
+        .btn:hover { 
+            background: var(--accent); 
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); 
+        }
+
+        .contact {
+            height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: grey; position: relative; z-index: 2; border-top: 1px solid var(--glass-border);
+            text-align: center; padding: 0 5%;
+        }
+
+        /* Credentials Section Styling */
+        .credentials-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 4rem 5%;
+        }
+        .credentials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .credential-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cred-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 1.8rem;
+            margin-bottom: 16px;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+        }
+        .cred-card:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+        .cred-card h4 { font-size: 1.15rem; color: #fff; margin-bottom: 0.3rem; }
+        .cred-card .subtitle { color: var(--accent); font-size: 0.95rem; margin-bottom: 0.8rem; font-weight: 500; }
+        .cred-card .meta { font-size: 0.85rem; color: #a1a1aa; background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 20px; display: inline-block;
+        
+        .stat-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            display: inline-flex;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
+        }
+        .stat-card img {
+            display: block;
+            height: 160px; /* Forces uniform height for different widgets */
+        }
+
+        /* Research Section Styling */
+        .research-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 4rem 5%;
+        }
+        .research-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Full width list layout */
+            gap: 24px;
+        }
+        .research-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 2rem;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+        }
+        .research-card:hover {
+            border-color: var(--accent-2);
+            transform: translateX(8px);
+            box-shadow: -10px 10px 30px rgba(59, 130, 246, 0.15);
+        }
+        .research-card h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        body.light-mode .research-card h3 {
+            color: #18181b;
+        }
+        .research-meta {
+            color: var(--accent-2);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .research-desc {
+            color: #a1a1aa;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+    }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+
+    <nav>
+        <div class="logo">N33l<span class="gradient-text">.py</span></div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <!-- Social Media Links -->
+            <div style="display: flex; gap: 15px;">
+                {% if social_profiles %}
+                    {% for social in social_profiles %}
+                        <a href="{{ social.url }}" target="_blank" style="color: var(--text-light); text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-light)'">{{ social.name }}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" id="theme-btn">🌙</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        {% if about %}
+            <h1 style="font-size: clamp(3rem, 7vw, 5.5rem); margin-bottom: 0.5rem; line-height: 1.1;">
+                Hi, I'm <span class="gradient-text">{{ about.name }}</span>
+            </h1>
+            <h2 style="font-size: 1.4rem; font-weight: 300; margin-bottom: 1.5rem; color:#49464e;">
+                {{ about.tagline }}
+            </h2>
+            <p style="font-size: 1.1rem; color: #a1a1aa; max-width: 650px; margin-bottom: 2rem; line-height: 1.7;">
+                {{ about.bio }}
+            </p>
+        {% endif %}
+
+        <!-- Live Coding & Practice Stats -->
+        <div class="stat-card-container">
+            {% if coding_profiles %}
+                {% for profile in coding_profiles %}
+                    {% if profile.username and profile.name|lower == 'leetcode' %}
+                        <!-- Live LeetCode Widget -->
+                        <a href="{{ profile.url }}" target="_blank" class="stat-card">
+                            <img src="https://leetcard.jacoblin.cool/{{ profile.username }}?theme=dark&font=Space%20Grotesk&ext=heatmap" alt="LeetCode Stats">
+                        </a>
+                    {% elif profile.username and profile.name|lower == 'github' %}
+                        <!-- Live GitHub Widget -->
+                        <a href="{{ profile.url }}" target="_blank" class="stat-card">
+                            <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username={{ profile.username }}&theme=tokyonight" alt="GitHub Stats">
+                        </a>
+                    {% elif profile.username and profile.name|lower == 'kaggle' %}
+                        <!-- Custom Kaggle Card -->
+                        <a href="{{ profile.url }}" target="_blank" class="stat-card" style="width: 330px; height: 160px; background: linear-gradient(135deg, #20BEFF 0%, #0276B8 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: white;">
+                            <div style="font-size: 1.8rem; font-weight: 700; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px;">
+                                📊 Kaggle
+                            </div>
+                            <p style="margin-top: 5px; font-weight: 500; font-size: 1rem; opacity: 0.9;">@{{ profile.username }}</p>
+                            <span style="margin-top: 15px; background: rgba(0,0,0,0.25); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; transition: background 0.3s;" onmouseover="this.style.background='rgba(0,0,0,0.4)'" onmouseout="this.style.background='rgba(0,0,0,0.25)'">
+                                View Datasets & Profile &rarr;
+                            </span>
+                        </a>
+                    {% else %}
+                        <!-- Standard Fallback Button for Codeforces, etc. -->
+                        <a href="{{ profile.url }}" target="_blank" class="profile-btn" style="padding: 12px 24px; border-radius: 50px; height: fit-content; align-self: center;">
+                            {{ profile.name }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Skills Grid -->
+        <div style="max-width: 800px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 2rem;">
+            {% for skill in skills %}
+                <span class="skill-tag">{{ skill.name }}</span>
+            {% endfor %}
+        </div>
+
+        
+    </section>
+
+    <!-- Credentials: Education & Certifications Section -->
+    <section class="credentials-section">
+        <div class="credentials-grid">
+            
+            <!-- Education Column -->
+            <div class="credential-column">
+                <h3 class="gradient-text">🎓 Education</h3>
+                {% if education_list %}
+                    {% for edu in education_list %}
+                    <div class="cred-card">
+                        <h4>{{ edu.degree }}</h4>
+                        <div class="subtitle">{{ edu.institution }}</div>
+                        <span class="meta">{{ edu.year }}</span>
+                        {% if edu.description %}
+                            <p style="color: #a1a1aa; font-size: 0.9rem; margin-top: 0.8rem;">{{ edu.description }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="cred-card">
+                        <p style="color: #a1a1aa;">No education added yet. Visit Django Admin to add your degrees.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Certifications Column -->
+            <div class="credential-column">
+                <h3 class="gradient-text">📜 Certifications</h3>
+                {% if certifications_list %}
+                    {% for cert in certifications_list %}
+                    <div class="cred-card">
+                        <h4>{{ cert.title }}</h4>
+                        <div class="subtitle">{{ cert.issuer }}</div>
+                        <span class="meta">{{ cert.date_earned }}</span>
+                        <div style="margin-top: 1rem;">
+                            {% if cert.credential_link %}
+                                <a href="{{ cert.credential_link }}" target="_blank" style="color: var(--accent-2); font-size: 0.9rem; text-decoration: none; font-weight: 500;">Verify Credential &rarr;</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="cred-card">
+                        <p style="color: #a1a1aa;">No certifications added yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+    
+
+    <!-- Bento Grid Projects Showcase -->
+    <section class="bento-section">
+        <p style="opacity: 0.5; animation: bounce 2s infinite; margin-top: 3rem;">↓ Explore My Projects</p>
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;" class="gradient-text">Featured Works</h2>
+            <p style="color: #a1a1aa;">A curated selection of my development & technical projects.</p>
+        </div>
+
+        <div class="bento-grid">
+            {% if projects %}
+                {% for project in projects %}
+                <!-- Bento card adds the 'wide' class automatically if selected in admin -->
+                <div class="bento-card {% if project.card_size == 'wide' %}wide{% endif %}">
+                    {% if project.image %}
+                    <div class="bento-img-container">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    </div>
+                    {% endif %}
+                    <div class="bento-content">
+                        <div>
+                            <h3>{{ project.title }}</h3>
+                            <p>{{ project.description }}</p>
+                        </div>
+                        <div>
+                            <div class="bento-tech">Stack: {{ project.technologies }}</div>
+                            {% if project.live_link %}
+                                <a href="{{ project.live_link }}" target="_blank" class="btn">View Project &rarr;</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="bento-card wide" style="text-align: center; padding: 4rem;">
+                    <h3>No Projects Yet</h3>
+                    <p>Add your first project</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Research Works Section -->
+    <section class="research-section">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 0.5rem;" class="gradient-text">Research & Publications</h2>
+            <p style="color: #a1a1aa;">Academic papers, system design studies, and technical publications.</p>
+        </div>
+
+        <div class="research-grid">
+            {% if research_works %}
+                {% for research in research_works %}
+                <div class="research-card">
+                    <h3>{{ research.title }}</h3>
+                    <div class="research-meta">
+                        <span>{{ research.publication }}</span> 
+                        <span style="color: #a1a1aa; margin: 0 8px;">|</span> 
+                        <span style="color: #a1a1aa;">{{ research.date }}</span>
+                    </div>
+                    <p class="research-desc">{{ research.description }}</p>
+                    {% if research.link %}
+                        <a href="{{ research.link }}" target="_blank" class="btn" style="border-color: var(--accent-2);">Read Paper &rarr;</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="research-card" style="text-align: center;">
+                    <p style="color: #a1a1aa;">No research publications added yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;" class="gradient-text">Let's Build Something Amazing</h2>
+        <p style="color: #a1a1aa; max-width: 500px; margin-bottom: 2rem;">Have a project in mind or want to collaborate? Feel free to reach out.</p>
+        <a href="mailto:neeladribanerjee25@gmail.com" class="btn" style="padding: 14px 32px; font-size: 1rem;">Contact Me</a>
+        <p style="margin-top: 4rem; opacity: 0.4; font-size: 0.85rem;">&copy; 2026. Powered by Django & Python.</p>
+    </section>
+
+    <script>
+        const themeBtn = document.getElementById('theme-btn');
+        const body = document.body;
+
+        // Check local storage for saved theme
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            themeBtn.innerText = '☀️';
+        }
+
+        themeBtn.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                localStorage.setItem('theme', 'light');
+                themeBtn.innerText = '☀️';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeBtn.innerText = '🌙';
+            }
+        });
+    </script>
+
+</body>
+</html>
